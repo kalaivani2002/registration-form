@@ -10,8 +10,8 @@ import 'primeicons/primeicons.css';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-
-import { Pane, Text, majorScale, Dialog } from 'evergreen-ui'
+import { Pane, Text, majorScale, Dialog, toaster } from 'evergreen-ui';
+import Swal from 'sweetalert2';
 
 // import DefaultDialogExample from './viewUser/page';
 import Modal from '@/component/modal/modal';
@@ -39,12 +39,12 @@ function FormTable() {
   const router = useRouter();
 
   useEffect(() => {
-   let previousData =  JSON.parse(localStorage.getItem('userData'))
+    let previousData = JSON.parse(localStorage.getItem('userData'))
     // localStorage.setItem('userData',JSON.stringify(yourData))
-    if(previousData){
-previousData.forEach(e => {
-  e.age = calculateAge(e.dob);
-});
+    if (previousData) {
+      previousData.forEach(e => {
+        e.age = calculateAge(e.dob);
+      });
     }
 
     setData(previousData);
@@ -56,6 +56,22 @@ previousData.forEach(e => {
     router.push('/addUser');
   };
 
+  const deletePopup = (rowData) => {
+    Swal.fire({
+      title: "Are you sure to delete this?",
+      icon: "error",
+      confirmButtonText: "Yes",
+      cancelButtonText: "cancel",
+      showCancelButton: true,
+      showCloseButton: true
+    }).then((e) => {
+      console.log(e, "kalai");
+      if (e.isConfirmed) {
+        // console.log("");
+        deleteRow(rowData);
+      }
+    });
+  }
 
   const deleteRow = (rowData) => {
     const updatedData = data.filter((row) => row.id !== rowData.id);
@@ -63,7 +79,9 @@ previousData.forEach(e => {
     setSelectedRow(null);
     console.log('updatedData', updatedData, selectedRow);
     localStorage.setItem('userData', JSON.stringify(updatedData))
+    toaster.success('User deleted successfully')
   };
+
   const editRow = (rowData) => {
     setviewId(rowData.id)
     router.push('/edit/' + rowData.id)
@@ -100,7 +118,7 @@ previousData.forEach(e => {
       {/* <Button label="Submit" icon="pi pi-check" /> */}
       <Button icon="pi pi-eye" className="p-button-rounded p-button-info p-mr-2" onClick={() => viewRow(rowData)} />
       <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning p-mr-2" onClick={() => editRow(rowData)} />
-      <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => deleteRow(rowData)} />
+      <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => deletePopup(rowData)} />
     </div>
   );
 
@@ -111,6 +129,7 @@ previousData.forEach(e => {
      focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 
      dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900`} icon="pi pi-plus" onClick={() => addRow()} />
       </div>
+
       <DataTable value={data}>
 
         <Column field="name" header="Name" />
@@ -131,7 +150,7 @@ previousData.forEach(e => {
           <div dangerouslySetInnerHTML={{ __html: userData }} />
         </Dialog>
       </Pane>
-      
+
     </>
   );
 }

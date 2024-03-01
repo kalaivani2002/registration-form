@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toaster, Button } from 'evergreen-ui';
+// import { Button } from 'primereact/button';
 
 function AddUser() {
     const [formData, setFormData] = useState({
@@ -53,7 +55,8 @@ function AddUser() {
      }
      storedData.push(userData)
      localStorage.setItem('userData',JSON.stringify(storedData))
-     router.push('/')
+     router.push('/');
+     toaster.success('User added successfully!')
     };
 
     return (
@@ -118,6 +121,7 @@ function AddUser() {
                 >
                     Add User
                 </button>
+                {/* <Button onClick={() => toaster.success('Your source is now sending data')}>Success</Button> */}
             </form>
         </div>
     );
