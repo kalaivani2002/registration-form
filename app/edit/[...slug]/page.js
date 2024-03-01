@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toaster } from 'evergreen-ui';
+
 function EditUser({ params }) {
     const [formData, setFormData] = useState({
         name: '',
@@ -41,6 +43,7 @@ function EditUser({ params }) {
               updatedUserData[index] = formData; // Assuming formData contains updated user data
               localStorage.setItem('userData', JSON.stringify(updatedUserData));
               router.push('/')
+              toaster.success('User details edited successfully')
           } else {
               console.error(`User with ID ${id} not found in localStorage.`);
           }
